@@ -6,4 +6,6 @@ code.
 
 ## Day 1
 
-Finding two in a list that sum to 2020.
+Part One: Find the product of two integers in a list that sum to 2020.
+
+Part Two: Find the product of three integers in a list that sum to 2020.
