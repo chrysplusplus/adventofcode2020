@@ -26,3 +26,8 @@ Given a grid of *trees* that repeats infinitely to the right, find the number of
 trees encountered on the line that follows the slope `(right 3, down 1)` from
 the top-left corner of the grid.
 
+Part Two: The same as abve, but for multiple slopes, `(right 1, down 1)`,
+`(right 3, down 1)`, `(right 5, down 1)`, `(right 7, down 1)` and `(right 1,
+down 2`. Take the product of the number of trees that each slope collides with
+on the grid.
+
