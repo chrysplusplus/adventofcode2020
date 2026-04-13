@@ -19,3 +19,10 @@ Find the number of valid passwords within a list of strings.
 Part Two: Determine whether *only one* of the specified indices is equal to the
 specified character; if so this string is considered a *valid password*. As
 above, find the number of valid passwords with a list of strings.
+
+## Day 3
+
+Given a grid of *trees* that repeats infinitely to the right, find the number of
+trees encountered on the line that follows the slope `(right 3, down 1)` from
+the top-left corner of the grid.
+
