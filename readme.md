@@ -64,3 +64,14 @@ Part Two: Not all of the possible seat IDs on the plane actually exist,
 specifically the ones at the front and back of the hypothetical rows. The input
 includes all possible seats *except* one, but what is the ID of this seat?
 
+## Day 6
+
+Part One: The input contains groups of people's positive responses to a set of
+questions, each question being identified by a single lowercase letter of the
+alphabet (meaning there is a maximum of 26 different questions). For each group
+of people, count the unique number of questions with positive reponses; then
+take the same of this count for all groups.
+
+Part Two: Same as before but instead count for each group the number of
+questions for which everyone in the group gave positive responses.
+
