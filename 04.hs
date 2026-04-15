@@ -1,3 +1,6 @@
+import Data.List
+import Text.Read
+
 type Passport = [(String,String)]
 
 testPassports :: [Passport]
@@ -11,7 +14,7 @@ testPassports2 = [[("eyr", "1972"), ("cid", "100"), ("hcl", "#18171d"), ("ecl", 
                   [("iyr", "2019"), ("hcl", "#602927"), ("eyr", "1967"), ("hgt", "170cm"), ("ecl", "grn"), ("pid", "012533040"), ("byr", "1946")],
                   [("hcl", "dab227"), ("iyr", "2012"), ("ecl", "brn"), ("hgt", "182cm"), ("pid", "021572410"), ("eyr", "2020"), ("byr", "1992"), ("cid", "277")],
                   [("hgt", "59cm"), ("ecl", "zzz"), ("eyr", "2038"), ("hcl", "74454a"), ("iyr", "2023"), ("pid", "3556412378"), ("byr", "2007")],
-                  -- only these four are valid
+                  -- only the following four are valid
                   [("pid", "087499704"), ("hgt", "74in"), ("ecl", "grn"), ("iyr", "2012"), ("eyr", "2030"), ("byr", "1980"), ("hcl", "#623a2f")],
                   [("eyr", "2029"), ("ecl", "blu"), ("cid", "129"), ("byr", "1989"), ("iyr", "2014"), ("pid", "896056539"), ("hcl", "#a97842"), ("hgt", "165cm")],
                   [("hcl", "#888785"), ("hgt", "164cm"), ("byr", "2001"), ("iyr", "2015"), ("cid", "88"), ("pid", "545766238"), ("ecl", "hzl"), ("eyr", "2022")],
@@ -303,24 +306,84 @@ validPassportFields :: [String]
 validPassportFields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"] -- but not "cid"
 
 firsts :: [(a,b)] -> [a]
-firsts = map get where
-  get (x,_) = x
+firsts = map first where
+  first (x,_) = x
 
 isPassportValid :: Passport -> Bool
 isPassportValid passport = all (\field -> field `elem` fields) validPassportFields where
   fields = firsts passport
 
-countValidPassports :: [Passport] -> Int
-countValidPassports = foldr (\x acc -> acc + (fromEnum . isPassportValid $ x)) 0
+countValidPassports :: (Passport -> Bool) -> [Passport] -> Int
+countValidPassports validator = foldr (\x acc -> acc + (fromEnum . validator $ x)) 0
+
+numPrefixOf :: String -> Maybe Int
+numPrefixOf = readMaybe . takeWhile (`elem` ['0'..'9'])
+
+isHexDigit :: Char -> Bool
+isHexDigit ch = ch `elem` (['0'..'9'] ++ ['a'..'f'])
+
+isDecDigit :: Char -> Bool
+isDecDigit ch = ch `elem` ['0'..'9']
+
+isPassportFieldValid :: String -> String -> Bool
+isPassportFieldValid field value = case field of
+  "byr" -> isBirthYearValid . readMaybe $ value
+  "iyr" -> isIssueYearValid . readMaybe $ value
+  "eyr" -> isExpirationYearValid . readMaybe $ value
+  "hgt" -> isHeightValid value
+  "hcl" -> isHairColourValid value
+  "ecl" -> value `elem` ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+  "pid" -> (length value == 9) && (all isDecDigit value)
+  "cid" -> True
+  _     -> False
+  where
+    isBirthYearValid :: Maybe Int -> Bool
+    isBirthYearValid (Just year) = (1920 <= year) && (year <= 2002)
+    isBirthYearValid Nothing     = False
+
+    isIssueYearValid :: Maybe Int -> Bool
+    isIssueYearValid (Just year) = (2010 <= year) && (year <= 2020)
+    isIssueYearValid Nothing     = False
+
+    isExpirationYearValid :: Maybe Int -> Bool
+    isExpirationYearValid (Just year) = (2020 <= year) && (year <= 2030)
+    isExpirationYearValid Nothing     = False
+
+    isHeightCmValid :: Maybe Int -> Bool
+    isHeightCmValid (Just height) = (150 <= height) && (height <= 193)
+    isHeightCmValid Nothing       = False
+
+    isHeightInchValid :: Maybe Int -> Bool
+    isHeightInchValid (Just height) = (59 <= height) && (height <= 76)
+    isHeightInchValid Nothing       = False
+
+    isHeightValid :: String -> Bool
+    isHeightValid height
+      | "cm" `isSuffixOf` height = isHeightCmValid . numPrefixOf $ height
+      | "in" `isSuffixOf` height = isHeightInchValid . numPrefixOf $ height
+      | otherwise                = False
+
+    isHairColourValid :: String -> Bool
+    isHairColourValid [] = False
+    isHairColourValid (pref:colour) = case pref of
+      '#' -> (length colour == 6) && (all isHexDigit colour)
+      _   -> False
+
+isPassportValid2 :: Passport -> Bool
+isPassportValid2 p = areFieldsValid p && isPassportValid p where
+  areFieldsValid = all (\(field,value) -> isPassportFieldValid field value)
 
 main :: IO ()
 main = do
   putStrLn "===================PROGRAM===================="
 
-  --putStrLn "Test Part One (should be 2)"
-  --print . countValidPassports $ testPassports
-  --putStrLn "Answer: "
-  --print . countValidPassports $ actualPassports -- 202
+  putStrLn "Test Part One (should be 2)"
+  print . countValidPassports isPassportValid $ testPassports
+  putStrLn "Answer: "
+  print . countValidPassports isPassportValid $ actualPassports -- 202
 
   putStrLn "Test Part Two (should be 4)"
-  print testPassports2
+  print . countValidPassports isPassportValid2 $ testPassports2
+  putStrLn "Answer: "
+  print . countValidPassports isPassportValid2 $ actualPassports -- 137
+

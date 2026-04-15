@@ -49,6 +49,6 @@ specified field:
     - for cm, 150 <= number <= 193
     - for in, 59 <= number <= 76
 - hcl ::= #hhhhhh, where h ::= 0-9a-f
-- ecl ::= amb|blue|brn|gry|grn|hzl|oth
+- ecl ::= amb|blu|brn|gry|grn|hzl|oth
 - pid ::= ddddddddd, where d ::= 0-9
 
