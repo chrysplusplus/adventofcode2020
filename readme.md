@@ -75,3 +75,9 @@ take the same of this count for all groups.
 Part Two: Same as before but instead count for each group the number of
 questions for which everyone in the group gave positive responses.
 
+## Day 7
+
+Part One: Given a set of rules about what colour bags bags of a colour are
+allowed to carry, find the number of different coloured bags that could fit
+(no matter how eventually) a `shiny gold` bag inside.
+
