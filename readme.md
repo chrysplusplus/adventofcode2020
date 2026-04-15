@@ -52,3 +52,15 @@ specified field:
 - ecl ::= amb|blu|brn|gry|grn|hzl|oth
 - pid ::= ddddddddd, where d ::= 0-9
 
+## Day 5
+
+Part One: Seats on a plane are represented by a binary partition sequences, like
+`FBFBBFFRLR`, which is called the boarding pass. This boarding pass represents
+seat 5 in row 44. There are 8 seats in each of the 128 rows. Given that the seat
+ID is the result of the expression `row * 8 + column` (for this sequence it
+would be 357), find the highest seat ID from a list of boarding passes.
+
+Part Two: Not all of the possible seat IDs on the plane actually exist,
+specifically the ones at the front and back of the hypothetical rows. The input
+includes all possible seats *except* one, but what is the ID of this seat?
+
