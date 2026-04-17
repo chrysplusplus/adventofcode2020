@@ -1,4 +1,6 @@
-import Data.Tuple
+import Control.Arrow
+import Data.Graph
+import Data.Maybe
 import Text.Read
 
 testData :: [String]
@@ -19,31 +21,54 @@ data Rule = Rule Bag [(Int,Bag)]
 breakAt :: Eq a => a -> [a] -> ([a],[a])
 breakAt brk = break ((==) brk)
 
-maybeIntPrefixOf :: String -> Maybe Int
-maybeIntPrefixOf = readMaybe . takeWhile (`elem` ['0'..'9'])
-
 intPrefixOf :: Int -> String -> Int
-intPrefixOf def s = maybe def id $ maybeIntPrefixOf s
+intPrefixOf def = maybe def id . readMaybe . takeWhile (`elem` ['0'..'9'])
 
 joinWords :: [String] -> String
 joinWords = foldr1 (\x acc -> x ++ " " ++ acc)
 
-parseRule = toRule . children . skipDefineTkn . subjectColor . words where
-  subjectColor = swap . breakAt "bags"
-  skipDefineTkn (parse,keep) = (drop 2 parse, keep)
-  childCount = intPrefixOf 0
-  bagTknFilter = (`notElem` ["bag", "bags", "bag.", "bags."])
-  childBag = joinWords . filter bagTknFilter . drop 1 . words
-  parseChild child = (childCount child, childBag child)
-  parseChildren (this,[]) = parseChild this : []
-  parseChildren (this,next) = parseChild this : (parseChildren . breakAt ',' . drop 2 $ next)
-  children (parse,keep) = (parseChildren . breakAt ',' . joinWords $ parse, keep)
-  toRule (children,subject) = Rule (joinWords subject) children
+parseChild :: String -> (Int,Bag)
+parseChild = arr words >>>
+  (arr head >>> arr (intPrefixOf 0)) &&&            -- bag count
+  (arr (drop 1) >>> arr (take 2) >>> arr joinWords) -- bag type
+
+parseRule :: String -> Rule
+parseRule = arr words >>>
+  (arr (take 2) >>> arr joinWords) &&& -- bag type
+  (arr (drop 4) >>> arr joinWords) >>> -- children
+  second (
+    hasChildren >>> noChildren ||| parseChildren
+  ) >>>
+  arr (uncurry Rule)
+    where
+      hasChildren = (arr words >>> arr head) &&& arr id >>>
+        arr (\(w,s) -> if w == "no" then Left () else Right (s))
+      parseChildren' (this,"")   = parseChild this : []
+      parseChildren' (this,next) = parseChild this : parseChildren' (breakAt ',' $ drop 1 next)
+      noChildren = arr (const [])
+      parseChildren = arr (breakAt ',') >>> arr parseChildren'
+
+ruleToVertex :: Rule -> (Bag, Bag, [Bag])
+ruleToVertex (Rule name children) = (name, name, [snd child | child <- children]) where
+
+pairWith :: Eq a => a -> [a] -> [(a,a)]
+pairWith l = map ((,) l) . filter (not . (==) l)
+
+countContainingBags :: Bag -> [Rule] -> Int
+countContainingBags bag rules = sum . map (fromEnum . uncurry (path graph)) $ pairs where
+  (graph, _, vertextFromKey) = graphFromEdges . map ruleToVertex $ rules
+  justVertex = fromJust . vertextFromKey
+  pairs = pairWith (justVertex bag) . map (\(Rule n _) -> justVertex n) $ rules
 
 main :: IO ()
 main = do
   putStrLn "===================PROGRAM===================="
 
+  dataFile <- readFile "07.txt"
+  let realData = lines dataFile
+
   putStrLn "Test Part One (should be 4)"
-  print . parseRule $ head testData
+  print . countContainingBags "shiny gold" . map parseRule $ testData
+  putStrLn ("Answer:")
+  print . countContainingBags "shiny gold" . map parseRule $ realData -- 26 incorrect
 

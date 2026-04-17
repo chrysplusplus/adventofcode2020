@@ -79,5 +79,5 @@ questions for which everyone in the group gave positive responses.
 
 Part One: Given a set of rules about what colour bags bags of a colour are
 allowed to carry, find the number of different coloured bags that could fit
-(no matter how eventually) a `shiny gold` bag inside.
+(no matter how indirectly) a `shiny gold` bag inside.
 
