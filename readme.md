@@ -81,3 +81,24 @@ Part One: Given a set of rules about what colour bags bags of a colour are
 allowed to carry, find the number of different coloured bags that could fit
 (no matter how indirectly) a `shiny gold` bag inside.
 
+Part Two: Using the same rules, count how many bags a `shiny gold bag` contains.
+
+## Day 8
+
+Part One: You are given a program consisting of a simple instruction set:
+
+- `acc` increases or decreases an accumulator by its operand
+- `jmp` jumps to an instruction relative to itself using the operand as an
+  offset
+- `nop` which does nothing and continues to the next instruction
+
+This particular program contains an infinite loop, which can be identified when
+the execution jumps to an instruction that has already been executed. What is
+the value of the accumulator immediately before the program loops?
+
+Part Two: Exactly one of the instructions in the program has been corrupted;
+either a `jmp` has become a `nop` or vice-versa. When it is not corrupted, the
+program terminates by reaching the end of the instructions. After finding and
+fixing the corruption, what is the value in the accumulator when the program
+terminates?
+

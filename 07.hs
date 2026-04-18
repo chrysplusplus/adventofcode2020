@@ -1,5 +1,6 @@
 import Control.Arrow
 import Data.Graph
+import Data.Map (Map, fromList, (!))
 import Data.Maybe
 import Text.Read
 
@@ -51,14 +52,31 @@ parseRule = arr words >>>
 ruleToVertex :: Rule -> (Bag, Bag, [Bag])
 ruleToVertex (Rule name children) = (name, name, [snd child | child <- children]) where
 
-pairWith :: Eq a => a -> [a] -> [(a,a)]
-pairWith l = map ((,) l) . filter (not . (==) l)
+pairWithSnd :: Eq a => a -> [a] -> [(a,a)]
+pairWithSnd l = map (, l) . filter (not . (==) l)
 
 countContainingBags :: Bag -> [Rule] -> Int
 countContainingBags bag rules = sum . map (fromEnum . uncurry (path graph)) $ pairs where
-  (graph, _, vertextFromKey) = graphFromEdges . map ruleToVertex $ rules
-  justVertex = fromJust . vertextFromKey
-  pairs = pairWith (justVertex bag) . map (\(Rule n _) -> justVertex n) $ rules
+  (graph, _, vertexFromKey) = graphFromEdges . map ruleToVertex $ rules
+  justVertex = fromJust . vertexFromKey
+  pairs = pairWithSnd (justVertex bag) . map (\(Rule n _) -> justVertex n) $ rules
+
+weightsMap :: (Bag -> Maybe Vertex) -> [Rule] -> Map (Vertex, Vertex) Int
+weightsMap vertexFromKey = fromList . foldr1 (++) . map keyCountFromRule where
+  justVertex = fromJust . vertexFromKey
+  makeKVPair b c n = ((justVertex b, justVertex c), n)
+  keyCountFromRule (Rule bag children) = [makeKVPair bag child count | (count,child) <- children]
+
+traverseWeightedGraph :: Map (Vertex, Vertex) Int -> Graph -> Vertex -> Int
+traverseWeightedGraph weights graph = aux . edgesOf where
+  edgesOf v = filter ((==v).fst) . edges $ graph
+  weightOf v0 v1 = weights ! (v0,v1)
+  aux es = sum [weightOf v0 v1 * ((aux . edgesOf $ v1) + 1) | (v0,v1) <- es]
+
+countContainedBags :: Bag -> [Rule] -> Int
+countContainedBags bag rules = traverseWeightedGraph weights graph . fromJust . vertexFromKey $ bag where
+  (graph, _, vertexFromKey) = graphFromEdges . map ruleToVertex $ rules
+  weights = weightsMap vertexFromKey $ rules
 
 main :: IO ()
 main = do
@@ -69,6 +87,12 @@ main = do
 
   putStrLn "Test Part One (should be 4)"
   print . countContainingBags "shiny gold" . map parseRule $ testData
-  putStrLn ("Answer:")
-  print . countContainingBags "shiny gold" . map parseRule $ realData -- 26 incorrect
+  putStrLn "Answer:"
+  print . countContainingBags "shiny gold" . map parseRule $ realData -- 179
+
+  putStrLn "Test Part Two (should be 32)"
+  print . countContainedBags "shiny gold" . map parseRule $ testData
+  putStrLn "Answer:"
+  print . countContainedBags "shiny gold" . map parseRule $ realData -- 18925
+
 
