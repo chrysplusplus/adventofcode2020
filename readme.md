@@ -102,3 +102,18 @@ program terminates by reaching the end of the instructions. After finding and
 fixing the corruption, what is the value in the accumulator when the program
 terminates?
 
+## Day 9
+
+Part One: You are given an encoded message. The encoding consists of a preamble
+of `n` numbers and then every number in the message is a sum of two different
+number of the previous `n` numbers. For example, given `n = 5` and a preamble of
+`35 20 15 25 47` and the next number is `40`, which is the sum of `15` and `25`,
+then `35` is no longer available for the sum of the next number, since it is
+more than `n = 5` numbers ago. *However*, the message encoding only obeys this
+rule up to a point. What is the first number in the message that does not follow
+this rule?
+
+(In my data, because the lengths of the preamble in the test data and real data
+are different, I am including the preamble length as the first number in the
+encoding.)
+
