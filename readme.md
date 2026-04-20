@@ -121,3 +121,27 @@ Part Two: Given that the answer to part one is the `invalid number I` find the
 set of at least two contiguous numbers in the input message that sum to `I`.
 What is the sum of the smallest and largest number in this set?
 
+## Day 10
+
+Part One: You have a set of adapters each with their own `joltage rating r`. As
+well as these you have a device that has an `r` of 3 higher than the highest `r`
+in the set. To be able to charge the device, it must be connected to a source
+with `r=0`. However, adapters can only connect to a source with a rating of `1-3
+jolts` lower than its own. Chaining all of the adapters in the set together to
+charge the device, what is the product of `1-jolt differences` and `3-jolt
+differences`?
+
+Part Two: Given the rules from part one, how many possible arrangements of the
+adapters are there that would be able to charge the device?
+
+Note: We know that each successive number in the input list differ by either 1
+or 3, so we can surmise that each contiguous triple falls into one of the
+following cases:
+
+1. diffs by 1,1 => from first elem by 1,2 => either could be accepted
+2. diffs by 1,3 => from first elem by 1,4 => only the first is valid
+3. diffs by 3,1 => from first elem by 3,4 => again, only the first is valid
+4. diffs by 3,3 => from first elem by 3,6 => ...
+
+Only case 1, with the triple `x x+1 x+2` results in a choice.
+
