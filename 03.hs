@@ -378,10 +378,10 @@ steps2 :: Step -> Int -> [(Int,Int)]
 steps2 (Step dx dy) height = [(dx * i, dy * i) | i <- [0..((height-1) `div` dy)]]
 
 countTreesOnSteppedSlope :: Grid -> Step -> Int
-countTreesOnSteppedSlope grid step = sum . map (at grid) . rbind steps2 (height grid) $ step
+countTreesOnSteppedSlope grid = sum . map (at grid) . rbind steps2 (height grid)
 
 countTrees2 :: Context -> Int
-countTrees2 (Context grid _) = foldr (*) 1 . map (countTreesOnSteppedSlope grid) $ stepVariants
+countTrees2 (Context grid _) = product . map (countTreesOnSteppedSlope grid) $ stepVariants
 
 main :: IO ()
 main = do

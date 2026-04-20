@@ -9,7 +9,7 @@ nextGroup = aux . break null where
 
 splitIntoGroups :: [String] -> [[String]]
 splitIntoGroups = aux . nextGroup where
-  aux (grp,[])   = grp : []
+  aux (grp,[])   = [grp]
   aux (grp,rmdr) = grp : (aux . nextGroup $ rmdr)
 
 unique :: Eq a => [a] -> [a]
@@ -24,7 +24,7 @@ unpackGroupsUniques s = (grps, map uniqueResponses grps) where
   grps = splitIntoGroups s
 
 groupAgreement :: [String] -> String -> [Bool]
-groupAgreement grp uniques = map aux uniques where
+groupAgreement grp = map aux where
   aux uniq = all (elem uniq) grp
 
 countAgreements :: [String] -> String -> Int
@@ -37,26 +37,23 @@ printGroupAgreement grp uniqs = do
   print $ countAgreements grp uniqs
   putStrLn ""
 
-bind2 :: (a -> b -> c) -> (a,b) -> c
-bind2 fn (x,y) = fn x y
-
 main :: IO ()
 main = do
   putStrLn "===================PROGRAM===================="
 
   dataFile <- readFile "06.txt"
-  let actualData = lines $ dataFile
+  let actualData = lines dataFile
   let (actGroups, actUniques) = unpackGroupsUniques actualData
 
   let (testGroups, testUniques) = unpackGroupsUniques testData
 
   putStrLn "Test Part One (should be 11)"
-  print . foldr1 (+) . map length $ testUniques
+  print . sum $ map length testUniques
   putStrLn "Answer:"
-  print . foldr1 (+) . map length $ actUniques -- 6809
+  print . sum $ map length actUniques -- 6809
   
   putStrLn "Test Part Two (should be 6)"
-  print . sum . map (bind2 countAgreements) $ zip testGroups testUniques
+  print . sum $ zipWith countAgreements testGroups testUniques
   putStrLn "Answer:"
-  print . sum . map (bind2 countAgreements) $ zip actGroups actUniques -- 3394
+  print . sum $ zipWith countAgreements actGroups actUniques -- 3394
 

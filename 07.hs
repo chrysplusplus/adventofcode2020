@@ -20,10 +20,10 @@ data Rule = Rule Bag [(Int,Bag)]
   deriving Show
 
 breakAt :: Eq a => a -> [a] -> ([a],[a])
-breakAt brk = break ((==) brk)
+breakAt brk = break (brk ==)
 
 intPrefixOf :: Int -> String -> Int
-intPrefixOf def = maybe def id . readMaybe . takeWhile (`elem` ['0'..'9'])
+intPrefixOf def = fromMaybe def . readMaybe . takeWhile (`elem` ['0'..'9'])
 
 joinWords :: [String] -> String
 joinWords = foldr1 (\x acc -> x ++ " " ++ acc)
@@ -43,14 +43,14 @@ parseRule = arr words >>>
   arr (uncurry Rule)
     where
       hasChildren = (arr words >>> arr head) &&& arr id >>>
-        arr (\(w,s) -> if w == "no" then Left () else Right (s))
-      parseChildren' (this,"")   = parseChild this : []
+        arr (\(w,s) -> if w == "no" then Left () else Right s)
+      parseChildren' (this,"")   = [parseChild this]
       parseChildren' (this,next) = parseChild this : parseChildren' (breakAt ',' $ drop 1 next)
       noChildren = arr (const [])
       parseChildren = arr (breakAt ',') >>> arr parseChildren'
 
 ruleToVertex :: Rule -> (Bag, Bag, [Bag])
-ruleToVertex (Rule name children) = (name, name, [snd child | child <- children]) where
+ruleToVertex (Rule name children) = (name, name, [snd child | child <- children])
 
 pairWithSnd :: Eq a => a -> [a] -> [(a,a)]
 pairWithSnd l = map (, l) . filter (not . (==) l)
@@ -74,9 +74,9 @@ traverseWeightedGraph weights graph = aux . edgesOf where
   aux es = sum [weightOf v0 v1 * ((aux . edgesOf $ v1) + 1) | (v0,v1) <- es]
 
 countContainedBags :: Bag -> [Rule] -> Int
-countContainedBags bag rules = traverseWeightedGraph weights graph . fromJust . vertexFromKey $ bag where
-  (graph, _, vertexFromKey) = graphFromEdges . map ruleToVertex $ rules
-  weights = weightsMap vertexFromKey $ rules
+countContainedBags bag rules = traverseWeightedGraph weights graph . fromJust $ vertexFromKey bag where
+  (graph, _, vertexFromKey) = graphFromEdges $ map ruleToVertex rules
+  weights = weightsMap vertexFromKey rules
 
 main :: IO ()
 main = do

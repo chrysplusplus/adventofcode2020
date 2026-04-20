@@ -310,7 +310,7 @@ firsts = map first where
   first (x,_) = x
 
 isPassportValid :: Passport -> Bool
-isPassportValid passport = all (\field -> field `elem` fields) validPassportFields where
+isPassportValid passport = all (`elem` fields) validPassportFields where
   fields = firsts passport
 
 countValidPassports :: (Passport -> Bool) -> [Passport] -> Int
@@ -333,7 +333,7 @@ isPassportFieldValid field value = case field of
   "hgt" -> isHeightValid value
   "hcl" -> isHairColourValid value
   "ecl" -> value `elem` ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
-  "pid" -> (length value == 9) && (all isDecDigit value)
+  "pid" -> (length value == 9) && all isDecDigit value
   "cid" -> True
   _     -> False
   where
@@ -366,12 +366,12 @@ isPassportFieldValid field value = case field of
     isHairColourValid :: String -> Bool
     isHairColourValid [] = False
     isHairColourValid (pref:colour) = case pref of
-      '#' -> (length colour == 6) && (all isHexDigit colour)
+      '#' -> (length colour == 6) && all isHexDigit colour
       _   -> False
 
 isPassportValid2 :: Passport -> Bool
 isPassportValid2 p = areFieldsValid p && isPassportValid p where
-  areFieldsValid = all (\(field,value) -> isPassportFieldValid field value)
+  areFieldsValid = all (uncurry isPassportFieldValid)
 
 main :: IO ()
 main = do

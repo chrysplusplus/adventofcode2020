@@ -1,3 +1,5 @@
+import Data.Maybe (catMaybes)
+
 testData :: [Integer]
 testData = [1721, 979, 366, 299, 675, 1456]
 
@@ -13,10 +15,10 @@ complementProd :: Integer -> Integer -> Integer -> Maybe Integer
 complementProd complement x y = if x + y == complement then Just (x * y) else Nothing
 
 filterJust :: [Maybe a] -> [a]
-filterJust xs = [x | Just x <- xs]
+filterJust = catMaybes
 
 sum2020prod :: [Integer] -> Integer
-sum2020prod = head . filterJust . map (\(x,y) -> compProd2020 x y) . pairs where
+sum2020prod = head . filterJust . map (uncurry compProd2020) . pairs where
   compProd2020 = complementProd 2020
 
 triples :: [a] -> [(a,a,a)]

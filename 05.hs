@@ -181,12 +181,12 @@ toSeatID (row,col) = row * 8 + col
 
 printBPString :: String -> IO ()
 printBPString s = do
-  print $ s
-  let bp = toBoardingPass $ s
-  print $ bp
-  let pos = toSeatPos $ bp
-  print $ pos
-  print . toSeatID $ pos
+  print s
+  let bp = toBoardingPass s
+  print bp
+  let pos = toSeatPos bp
+  print pos
+  print $ toSeatID pos
   putStrLn ""
 
 calculateSeatID :: String -> Int
@@ -205,16 +205,16 @@ main :: IO ()
 main = do
   putStrLn "===================PROGRAM===================="
 
-  let seatIDs =  map calculateSeatID $ puzzData
+  let seatIDs =  map calculateSeatID puzzData
 
   putStrLn "Test Part One (should be 819)"
-  print . foldr max 0 . map calculateSeatID $ testData
+  print $ foldr (max . calculateSeatID) 0 testData
   putStrLn "Answer:"
-  print . foldr max 0 $ seatIDs -- 818
+  print $ foldr max 0 seatIDs -- 818
 
-  let sortedSeats = sort $ seatIDs
+  let sortedSeats = sort seatIDs
   let maybeSeat = findEmptySeat sortedSeats
   if isNothing maybeSeat
-  then do putStrLn "Could not find element"
-  else do print . fromJust $ maybeSeat -- 559
+    then do putStrLn "Could not find element"
+    else do print $ fromJust maybeSeat -- 559
 
