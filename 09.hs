@@ -62,6 +62,22 @@ fromMaybeBreakSearcher _                              = (-1,-1)
 solvePart1 :: [Int] -> Int
 solvePart1 = uncurry findBreak . messageFrom
 
+contiguousRangeOf :: Int -> [a] -> [[a]]
+contiguousRangeOf n xs = scanl shift (take n xs) (drop n xs)
+
+contiguousRanges :: [a] -> [[a]]
+contiguousRanges xs = aux l where
+  l = length xs
+  aux n
+    | n < 2     = undefined
+    | n == 2    = contiguousRangeOf n xs
+    | n == l    = xs : aux (pred n)
+    | otherwise = contiguousRangeOf n xs ++ aux (pred n)
+
+solvePart2 :: Int -> Int -> [Int] -> Int
+solvePart2 idx invalid msg = maximum sumRange + minimum sumRange where
+  sumRange = head . filter ((==invalid).sum) . contiguousRanges $ take idx msg
+
 main :: IO ()
 main = do
   dataFile <- readFile "09.txt"
@@ -78,8 +94,7 @@ main = do
   print realInvalidN -- 248131121
 
   putStrLn "Test Part Two (should be 62)"
-
-  mapM_ print . concat
-        . map (scanr (:) [])
-        . scanr (:) [] $ take testIdx testMsg
+  print $ solvePart2 testIdx testInvalidN testMsg
+  putStrLn "Answer:"
+  print $ solvePart2 realIdx realInvalidN realMsg -- 31580383
 

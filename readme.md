@@ -117,3 +117,7 @@ this rule?
 are different, I am including the preamble length as the first number in the
 encoding.)
 
+Part Two: Given that the answer to part one is the `invalid number I` find the
+set of at least two contiguous numbers in the input message that sum to `I`.
+What is the sum of the smallest and largest number in this set?
+
