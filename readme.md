@@ -145,3 +145,58 @@ following cases:
 
 Only case 1, with the triple `x x+1 x+2` results in a choice.
 
+For a 4-window (or a quadruple) of the input, `i0 i1 i2 i3`, the number of cases
+doubles:
+
+1. diffs 1,1,1 => 0,1,2,3 => 4 opts `i0 i1 i2 i3 | i0 i2 i3 | i0 i1 i3 | i0 i3`
+2. diffs 1,1,3 => 0,1,2,5 => 2 opts `i0 i1 i2 i3 | i0 i2 i3`
+3. diffs 1,3,1 => 0,1,4,5 => 1 opts `i0 i1 i2 i3`
+4. diffs 1,3,3 => 0,1,4,7 => 1 opts `i0 i1 i2 i3`
+5. diffs 3,1,1 => 0,3,4,5 => 2 opts `i0 i1 i2 i3            | i0 i1 i3`
+6. diffs 3,1,3 => 0,3,4,7 => 1 opts `i0 i1 i2 i3`
+7. diffs 3,3,1 => 0,3,6,7 => 1 opts `i0 i1 i2 i3`
+8. diffs 3,3,3 => 0,3,6,9 => 1 opts `i0 i1 i2 i3`
+
+Here are the cases for a 5-window over the input, giving `i0 i1 i2 i3 i4`:
+
+1. diffs  1,1,1,1 => 0,1,2,3,4
+    0,1,2,3,4
+    0, ,2,3,4
+    0,1, ,3,4
+    0, , ,3,4
+    0,1,2, ,4
+    0, ,2, ,4
+    0,1, , ,4
+2. diffs  1,1,1,3 => 0,1,2,3,6
+3. diffs  1,1,3,1 => 0,1,2,5,6
+4. diffs  1,1,3,3 => 0,1,2,5,8
+5. diffs  1,3,1,1 => 0,1,4,5,6
+6. diffs  1,3,1,3 => 0,1,4,5,8
+7. diffs  1,3,3,1 => 0,1,4,7,7
+8. diffs  1,3,3,3 => 0,1,4,7,10
+9. diffs  3,1,1,1 => 0,3,4,5,6
+10. diffs 3,1,1,3 => 0,3,4,5,8
+11. diffs 3,1,3,1 => 0,3,4,7,8
+12. diffs 3,1,3,3 => 0,3,4,7,10
+13. diffs 3,3,1,1 => 0,3,6,7,8
+14. diffs 3,3,1,3 => 0,3,6,7,10
+15. diffs 3,3,3,1 => 0,3,6,9,10
+16. diffs 3,3,3,3 => 0,3,6,9,12
+
+These cases are incomplete, but a pattern is beginning to emerge. The number of
+choices is derived from a contiguous sequence of 1's. For one of the test data
+sets, the number of valid permutations is `19208`, which is curiously not a
+power of two, but is equal to `2^3 × 7^4`. These are the cases for running
+sequences of 1's:
+
+1. diffs 1,1 (x+)0,1,2 yields *two* options
+2. diffs 1,1,1 (x+)0,1,2,3 yields *four* options
+3. diffs 1,1,1,1 (x+)0,1,2,3,4 yields *seven* options
+4. diffs 1,1,1,1,1 (x+)0,1,2,3,4,5 yields *thirteen* options
+5. diffs 1,1,1,1,1,1 (x+)0,1,2,3,4,5,6 yields *twenty-four*
+
+Part of the solution file explores this pattern (it ended up being a polynomial
+of order 8, and in the end I decided to find the lengths of groups of 1's, then
+simulate the choices that could be made across those differences; a little
+inefficient, since the values could be cached, but this is haskell.)
+
