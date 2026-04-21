@@ -200,3 +200,13 @@ of order 8, and in the end I decided to find the lengths of groups of 1's, then
 simulate the choices that could be made across those differences; a little
 inefficient, since the values could be cached, but this is haskell.)
 
+## Day 11
+
+Part One: A waiting room is represented as a grid of tiles, each tile being
+either a chair or floor. Chairs can either be free or occupied. In its initial
+state, every chair in the waiting room is empty. For every round of a
+simulation, if an empty chair has no occupied neighbours (a neighbour being one
+of the eight adjacent tiles) then it becomes occupied; if an occupied chair has
+four or more neighbours that are occupied then it becomes free. The floor always
+remains floor.
+
