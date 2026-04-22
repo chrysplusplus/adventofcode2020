@@ -217,3 +217,35 @@ adjacent tile; as well as this, if an occupied chair has *five or more*
 occupied neighbours, then it becomes free. How many chairs are occupied in the
 stable state of this updated model?
 
+## Day 12
+
+Part One: A ship navigates according to a sequence of instructions. These
+instructions are any of the following single-character movements, followed by
+an integer argument `a`:
+
+- N: move north by `a`
+- S: move south by `a`
+- E: move east by `a`
+- W: move west by `a`
+- L: turn `a` degrees left
+- R: turn `a` degrees right
+- F: move forwards by `a` in the facing direction.
+
+The ship starts *facing east*. At the end of the instruction sequence, what is
+the *Manhattan distance* between the start and end of the ship's journey?
+
+Part Two: The meaning of the instructions were misinterpreted: they actually
+refer to a waypoint that is *initially 10 east, 1 north* from the ship. The
+instruction, with the argument `a`, now mean:
+
+- N: move waypoint north by `a`
+- S: move waypoint south by `a`
+- E: move waypoint east by `a`
+- W: move waypoint west by `a`
+- L: rotate the waypoint `a` degrees left around the ship
+- R: rotate the waypoint `a` degrees right around the ship
+- F: move the ship towards the waypoint `a` times
+
+What is the Manhattan distance between the start and end of the shp's journey
+with these new instructions?
+
