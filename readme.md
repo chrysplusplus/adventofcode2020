@@ -208,5 +208,12 @@ state, every chair in the waiting room is empty. For every round of a
 simulation, if an empty chair has no occupied neighbours (a neighbour being one
 of the eight adjacent tiles) then it becomes occupied; if an occupied chair has
 four or more neighbours that are occupied then it becomes free. The floor always
-remains floor.
+remains floor. At some point after simulating these rules, the waiting room
+reaches an equilibrium. In this stable state, how many chairs are occupied?
+
+Part Two: There was a mistake in the previous model: the neighbours of a chair
+are the next chairs in each of the eight directions, rather than just in the
+adjacent tile; as well as this, if an occupied chair has *five or more*
+occupied neighbours, then it becomes free. How many chairs are occupied in the
+stable state of this updated model?
 
