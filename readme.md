@@ -249,3 +249,18 @@ instruction, with the argument `a`, now mean:
 What is the Manhattan distance between the start and end of the shp's journey
 with these new instructions?
 
+## Day 13
+
+Part One: At a bus station, the ID of buses determines how often they depart
+from the station (for example, Bus ID 4 departs every 4 minutes). Given a list
+of bus IDs and the current time, when is the next bus departure? What is the
+*product* of the ID of the next bus and how soon it is?
+
+Part Two: There are 'x's in this schedule which correspond to missing bus ID in
+a subsequent run of buses. There is a time `t` at which the first bus in the
+schedule departs, and then each subsequent bus in the schedule leaves the next
+minute, skipping a minute for any 'x's. For example, given the schedule
+`7,13,x,x,59,...`, at `t`, bus with ID `7` will leave, then `13` one minute
+later, then three minutes after that bus ID `59` and so on. For a given
+schedule, what is the value of `t`?
+
