@@ -264,3 +264,59 @@ minute, skipping a minute for any 'x's. For example, given the schedule
 later, then three minutes after that bus ID `59` and so on. For a given
 schedule, what is the value of `t`?
 
+One method could be to replace all instances of `x` with `1` so that the virtual
+`1` bus leaves every 1 units. for `i ::= i0 i1 i2 i3 ...`, assuming that `t` exists:
+
+```
+t       `mod` i0 = 0
+(t + 1) `mod` i1 = 0
+(t + 2) `mod` i2 = 0
+(t + 3) `mod` i3 = 0
+...
+```
+
+Distribution of addition in modulus arithmetic:
+
+```
+if x `mod` m = 0 =>
+(x + 1) `mod` m = 1
+...
+(x + m) `mod` m = 0
+
+so it distributes:
+(x + a) `mod` m =id= x `mod` m + a `mod` m
+
+in the general case
+for any i_n, with n elem natural numbers:
+(t + n) `mod` i_n = 0 => by distribution
+t `mod` i_n + n `mod` i_n = 0 `mod` i_n
+
+n `mod` i_n is a constant we can rename c_n:
+t `mod` i_n + c_n = 0 `mod` i_n => rearranging
+      t `mod` i_n = 0 `mod` i_n - c_n => by distribution
+                  = (-c_n) `mod` i_n
+
+modulus of negative number preserves the order of its numerical elemnts:
+...
+   0 `mod` m = 0
+(-1) `mod` m = m - 1
+(-2) `mod` m = m - 2
+...
+(-m) `mod` m = 0
+...
+(-n) `mod` m = m - n `mod` m
+
+returning to the general proof:
+                  = (-c_n) `mod` i_n => applying modulus
+                  = i_n - c_n `mod` i_n => recall def of c_n
+      t `mod` i_n = i_n - n `mod` i_n
+```
+
+So the program needs to find a value `t` for which
+
+```
+t `mod` i_n = i_n - n `mod` i_n
+```
+
+Is true for all values of `n`.
+
