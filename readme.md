@@ -320,3 +320,28 @@ t `mod` i_n = i_n - n `mod` i_n
 
 Is true for all values of `n`.
 
+## Day 14
+
+Part One: A given program operates on an array of 36-bit unsigned integers in
+memory. There may be two types of lines allowed in the program sequence:
+
+`mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X`
+
+Which specifies a bitmask for any subsequent memory-writes, which `0` and `1`
+are the bitmask values and `X` represents no change to the memory for that bit.
+
+`mem[8] = 11`
+
+Which attempts to write `11` (base 10) to memory address 8, though the actual
+value will be mutated by the bitmask.
+
+For the following program, the values in memory are `[7] = 101, [8] = 64`, and
+the sum of these is `165`:
+
+```
+mask = XXXXXXXXXXXXXXXXXXXXXXXXXXXXX1XXXX0X
+mem[8] = 11
+mem[7] = 101
+mem[8] = 0
+```
+
